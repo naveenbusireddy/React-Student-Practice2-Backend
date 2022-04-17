@@ -1,10 +1,29 @@
 const express = require("express");
 const { default: mongoose } = require("mongoose");
 const router = express.Router();
-const { schema } = require("../model/model");
 
-const StudentPractice = require("../model/model");
+const StudentPractice = require("../models/student");
 
+const users = require("../models/userSignUp");
+
+router.post("/userSignUp", async (req, res) => {
+    const data = new users({
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        email: req.body.email,
+        password: req.body.password,
+        phoneNo: req.body.phoneNo
+    });
+    
+    try {
+        const dataToSave = await data.save();
+        res.status(200).json(dataToSave);
+        res.send(result);
+    }
+    catch(error) {
+        res.status(500).json({message: error.message});
+    }
+})
 //Post Method
 router.post("/saveDetails", async (req, res) => {
   console.log(req.body);
@@ -83,5 +102,6 @@ router.delete("/delete/:id", async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 });
+
 
 module.exports = router;
