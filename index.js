@@ -1,4 +1,6 @@
+//Configuring / getting the .env file data
 require('dotenv').config();
+
 const express = require('express');
 const app = express();
 
@@ -6,11 +8,11 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 
 //importing the Routes to index file
-const routes = require('./routes'); 
+const routes = require('./routes/routesFile'); 
 
 //connect the database to our server using mongoose.
-const mongoString = process.env.DATABASE_URL
-mongoose.connect(mongoString);
+const mongoDataBase = process.env.DATABASE_URL
+mongoose.connect(mongoDataBase);
 const database = mongoose.connection
 
 //Middleware

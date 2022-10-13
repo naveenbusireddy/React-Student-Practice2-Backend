@@ -9,36 +9,37 @@ const StudentPractice = require("../models/student");
 const userSignUp = require("../models/userSignUp");
 
 // Router for User Sign Up purpose
-router.post("/signUp", [ check("email", "Please provide Valid Email").isEmail(),
-check("password", "Password should be more than 8 characters").isLength({min:8}) ],
+router.post("/signUp", 
   async (req, res) => {
+    console.log(req.body);
 
     try {
       const errors  = validationResult(req)
+
       if(!errors.isEmpty()) {
         return res.status(400).json({errors: errors.array()})
       }
-
-      let userEmail =await userSignUp.findOne({email: req.body.email});
+      let userEmail =await userSignUp.findOne({emailId: req.body.emailId});
       if(userEmail)
       {
         return res.send(`User with given email already exist`)
       }
-      
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
-      const data = new userSignUp({
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        email: req.body.email,
-        password: hashedPassword,
-        phoneNo: req.body.phoneNo,
-      });
-      await data.save();
-      // res.status(200).json(dataToSave);
-      let email=req.body.email;
-      const token = await JWT.sign({email}, "bys65ld53nkr32lr28dr01akr29aw23", {expiresIn:3600000})
-      res.json({token})
-      res.send(`Registered Successfully`);
+        const data = new userSignUp({
+          firstName: req.body.firstName,
+          lastName: req.body.lastName,
+          emailId: req.body.emailId,
+          password: hashedPassword,
+          phoneNo: req.body.phoneNo,
+        });
+        console.log(data);
+        const dataToSave = await data.save();
+        res.status(200).json(dataToSave);
+        let email=req.body.emailId;
+        const token = await JWT.sign({email}, "bys65ld53nkr32lr28dr01akr29aw23", {expiresIn:3600000})
+        res.json({token})
+        res.send(`Registered Successfully`);
+           
     } 
     catch (error) {
       res.status(500).json({ message: error.message });
@@ -73,7 +74,7 @@ router.post("/login", async (req, res) => {
 })
 
 //Post Method
-router.post("/saveDetails", async (req, res) => {
+router.post("/addStudent", async (req, res) => {
   console.log(req.body);
   // res.send('Post API');
   if (req.body._id) {
